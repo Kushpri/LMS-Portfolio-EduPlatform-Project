@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} · Mini LMS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>{{ course.title }}</h1>
+    <p>{{ course.description }}</p>
+</section>
+
+<section class="course-layout">
+    <div class="course-main">
+        <h2>Lessons</h2>
+
+        <div class="progress-bar">
+            <div id="course-progress-fill" class="progress-fill" style="width: 0;"></div>
+        </div>
+        <p id="course-progress-text" class="progress-text">Your progress updates as you complete lessons.</p>
+
+        <ul class="lesson-list">
+            {% for lesson in lessons %}
+                {% set done = lesson.id in completed_ids %}
+                <li class="lesson-item">
+                    <div class="lesson-info">
+                        <h3>{{ lesson.title }}</h3>
+                        <p>{{ lesson.content }}</p>
+                    </div>
+                    <button
+                        class="btn-outline complete-btn {% if done %}completed{% endif %}"
+                        data-lesson-id="{{ lesson.id }}"
+                        {% if done %}disabled{% endif %}
+                    >
+                        {% if done %}Completed ✓{% else %}Mark complete{% endif %}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <aside class="course-side">
+        <h2>Video & Resources</h2>
+
+        {% if course.id == 1 %}
+            <p>Quick Python intro video to go along with this course:</p>
+            <div class="video-wrapper">
+                <iframe
+                    src="https://www.youtube.com/embed/_uQrJ0TkZlc"
+                    title="Python Full Course"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+            </div>
+            <ul class="resource-links">
+                <li><a href="https://www.youtube.com/watch?v=_uQrJ0TkZlc" target="_blank">Full Python course on YouTube</a></li>
+                <li><a href="https://docs.python.org/3/tutorial/" target="_blank">Official Python docs</a></li>
+            </ul>
+        {% elif course.id == 2 %}
+            <p>HTML/CSS/JS visual explanation:</p>
+            <div class="video-wrapper">
+                <iframe
+                    src="https://www.youtube.com/embed/Vqgge8zQ3qE"
+                    title="Frontend Roadmap"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+            </div>
+            <ul class="resource-links">
+                <li><a href="https://www.youtube.com/watch?v=Vqgge8zQ3qE" target="_blank">Frontend roadmap (YouTube)</a></li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Learn" target="_blank">MDN Web Docs — Learn web dev</a></li>
+            </ul>
+        {% else %}
+            <p>More videos and resources coming soon.</p>
+        {% endif %}
+    </aside>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Let script.js know we are on a course page
+    window.LMS_HAS_COMPLETE = true;
+</script>
+{% endblock %}

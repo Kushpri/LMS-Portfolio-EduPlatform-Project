@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Your Dashboard · Mini LMS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Your Dashboard</h1>
+    <p>Welcome back, {{ user.username }}. Continue your learning below.</p>
+</section>
+
+<div class="dashboard-toolbar">
+    <input
+        type="text"
+        id="course-search"
+        placeholder="Search your courses..."
+        oninput="filterCourses()"
+    />
+</div>
+
+<section class="course-section">
+    <div class="course-grid" id="dashboard-course-grid">
+        {% for item in courses_data %}
+            {% set course = item.course %}
+            <article class="course-card" data-title="{{ course.title|lower }}">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+                <div class="course-progress-pill">
+                    {{ item.progress_pct }}% complete
+                </div>
+                <a href="{{ url_for('course', course_id=course.id) }}" class="btn-primary">
+                    Go to course
+                </a>
+            </article>
+        {% else %}
+            <p>You’re not enrolled in any courses yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Simple search filter on dashboard
+    function filterCourses() {
+        const input = document.getElementById("course-search");
+        const term = (input.value || "").toLowerCase();
+        const cards = document.querySelectorAll("#dashboard-course-grid .course-card");
+
+        cards.forEach(card => {
+            const title = card.dataset.title || "";
+            card.style.display = title.includes(term) ? "" : "none";
+        });
+    }
+</script>
+{% endblock %}
